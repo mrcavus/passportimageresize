@@ -1,0 +1,5 @@
+{
+    "USA": { "width": 2, "height": 2.5 },
+    "UK": { "width": 3.5, "height": 4.5 },
+    "Canada": { "width": 3.5, "height": 4.5 }
+}

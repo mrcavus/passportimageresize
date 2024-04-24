@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Passport Photo Resizer</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #f4f4f4;
+    }
+
+    #container {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        width: 400px;
+    }
+
+    label {
+        font-weight: bold;
+    }
+
+    select, input[type="file"] {
+        margin-bottom: 10px;
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-sizing: border-box;
+    }
+
+    #preview {
+        margin-top: 10px;
+        text-align: center;
+    }
+
+    #resized {
+        margin-top: 10px;
+        display: none;
+    }
+
+    button {
+        display: block;
+        margin: 10px auto;
+        padding: 10px 20px;
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    button.download {
+        background-color: #3498db;
+    }
+</style>
+</head>
+<body>
+
+<div id="container">
+    <h2>Passport Photo Resizer</h2>
+    <label for="country">Select your country:</label>
+    <select id="country">
+        <!-- Options will be added dynamically -->
+    </select>
+    <input type="file" id="image" accept="image/*">
+    <div id="preview"></div>
+    <canvas id="resized"></canvas>
+    <button id="resizeButton">Resize Image</button>
+    <a id="downloadButton" class="download" href="#" download="resized_passport_photo.png" style="display: none;">Download Resized Image</a>
+</div>
+
+<script src="./countries.json"></script>
+<script>
+    let countries;
+
+    fetch('countries.json')
+        .then(response => response.json())
+        .then(data => {
+            countries = data;
+            populateCountries();
+        });
+
+    function populateCountries() {
+        const countrySelect = document.getElementById('country');
+        for (const country in countries) {
+            const option = document.createElement('option');
+            option.value = country;
+            option.innerText = country;
+            countrySelect.appendChild(option);
+        }
+    }
+
+    const countrySelect = document.getElementById('country');
+    const imageInput = document.getElementById('image');
+    const preview = document.getElementById('preview');
+    const resizedCanvas = document.getElementById('resized');
+    const resizedCtx = resizedCanvas.getContext('2d');
+    const resizeButton = document.getElementById('resizeButton');
+    const downloadButton = document.getElementById('downloadButton');
+
+    countrySelect.addEventListener('change', () => {
+        const selectedCountry = countrySelect.value;
+        const size = countries[selectedCountry];
+        const width = size.width;
+        const height = size.height;
+        preview.innerHTML = `Recommended size: ${width}cm x ${height}cm`;
+    });
+
+    resizeButton.addEventListener('click', () => {
+        const file = imageInput.files[0];
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+            const img = new Image();
+            img.src = e.target.result;
+
+            img.onload = function() {
+                const selectedCountry = countrySelect.value;
+                const size = countries[selectedCountry];
+                const width = size.width * 118; // 1cm = 118px
+                const height = size.height * 118; // 1cm = 118px
+
+                resizedCanvas.width = width;
+                resizedCanvas.height = height;
+
+                const ctx = resizedCanvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, width, height);
+
+                preview.style.display = 'none';
+                resizedCanvas.style.display = 'block';
+                downloadButton.style.display = 'block';
+            };
+        };
+
+        reader.readAsDataURL(file);
+    });
+
+    downloadButton.addEventListener('click', () => {
+        const dataURL = resizedCanvas.toDataURL("image/png");
+        downloadButton.href = dataURL;
+    });
+</script>
+
+</body>
+</html>
