@@ -102,13 +102,13 @@
     const countrySelect = document.getElementById('country');
     const imageInput = document.getElementById('image');
     const preview = document.getElementById('preview');
-    const resizedCanvas = document.getElementById('resized');
-    const resizedCtx = resizedCanvas.getContext('2d');
     const resizeButton = document.getElementById('resizeButton');
     const downloadButton = document.getElementById('downloadButton');
 
     countrySelect.addEventListener('change', () => {
         // Clear previous image
+        const resizedCanvas = document.getElementById('resized');
+        const resizedCtx = resizedCanvas.getContext('2d');
         preview.style.display = 'block';
         resizedCanvas.style.display = 'none';
         downloadButton.style.display = 'none';
@@ -134,7 +134,7 @@
                 const size = countries[selectedCountry];
                 const width = size.width * 118; // 1cm = 118px
                 const height = size.height * 118; // 1cm = 118px
-
+                const resizedCanvas = document.getElementById('resized');
                 resizedCanvas.width = width;
                 resizedCanvas.height = height;
 
