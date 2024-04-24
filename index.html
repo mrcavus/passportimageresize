@@ -112,6 +112,7 @@
         preview.style.display = 'block';
         resizedCanvas.style.display = 'none';
         downloadButton.style.display = 'none';
+        resizeButton.style.display = 'block';
         resizedCtx.clearRect(0, 0, resizedCanvas.width, resizedCanvas.height);
 
         const selectedCountry = countrySelect.value;
@@ -144,6 +145,7 @@
                 preview.style.display = 'none';
                 resizedCanvas.style.display = 'block';
                 downloadButton.style.display = 'block';
+                resizeButton.style.display = 'none';
             };
         };
 
